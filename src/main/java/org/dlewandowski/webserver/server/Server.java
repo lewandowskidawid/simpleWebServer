@@ -1,36 +1,44 @@
 package org.dlewandowski.webserver.server;
 
-import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-
-import org.dlewandowski.webserver.request.Request;
-import org.dlewandowski.webserver.response.Response;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class Server {
 
+	private final String directory;
+
 	private final int port;
 
-	public Server(int port) {
+	private final int threadsNumber;
+
+	private ExecutorService executorService;
+
+	public Server(String directory, int port, int threadsNumber) {
+		this.directory = directory;
 		this.port = port;
+		this.threadsNumber = threadsNumber;
 	}
 
 	public void start() {
 		try (ServerSocket listener = new ServerSocket(port)) {
+			executorService = Executors.newFixedThreadPool(threadsNumber);
 			System.out.println("The date server is running...");
 			while (true) {
-				try (Socket socket = listener.accept()) {
-					test(socket);
-				}
+				Socket socket = listener.accept();
+				executorService.execute(new RequestHandler(socket, directory));
 			}
 		} catch (Throwable e) {
 			e.printStackTrace();
+		} finally {
+			if (executorService != null) {
+				executorService.shutdownNow();
+			}
 		}
 	}
 
-	private synchronized void test(Socket socket) throws IOException {
-		Request request = Request.from(socket);
-		Response response = Response.from(request);
-		response.sendResponse(socket.getOutputStream());
+	public void stop() {
+//ToDO is it needed or finally statement is enough
 	}
 }

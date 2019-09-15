@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -20,65 +19,54 @@ public class Request {
 
 	private static final String HEADER_KEY_VALUE_SEPARATOR = ":";
 
-	private final HttpMethod method;
-
-	private final String uri;
-
-	private final String httpVersion;
+	private final RequestInfo requestInfo;
 
 	private final Map<String, String> headers;
 
-	private Request(HttpMethod method, String uri, String httpVersion, Map<String, String> headers) {
-		this.method = method;
-		this.uri = uri;
-		this.httpVersion = httpVersion;
+	private Request(RequestInfo requestInfo, Map<String, String> headers) {
+		this.requestInfo = requestInfo;
 		this.headers = headers;
 	}
 
-	public static Request from(Socket socket) {
-		HttpMethod method = HttpMethod.OTHER;
-		String uri = StringUtils.EMPTY;
-		String httpVersion = StringUtils.EMPTY;
-		Map<String, String> headers = new HashMap<>();
+	public static Request from(Socket socket) throws IOException {
 		System.out.println("New Request");
-		try {
-			InputStreamReader streamReader = new InputStreamReader(socket.getInputStream());
-			BufferedReader reader = new BufferedReader(streamReader);
+		InputStreamReader streamReader = new InputStreamReader(socket.getInputStream());
+		BufferedReader reader = new BufferedReader(streamReader);
+		RequestInfo requestInfo = extractRequestInfo(reader);
+		Map<String, String> headers = extractRequestHeaders(reader);
+		return new Request(requestInfo, headers);
+	}
 
-			String line = reader.readLine();
-			if (StringUtils.isNotEmpty(line)){
-				System.out.println("First line: " + line);
-				String[] parameters = line.split(" ");
-				//TODO support for other needs to be provided
-				method = HttpMethod.valueOf(parameters[HTTP_METHOD_PARAM_INDEX]);
-				uri = parameters[URI_PARAM_INDEX];
-				httpVersion = parameters[HTTP_VERSION_PARAM_INDEX];
-				while (StringUtils.isNotEmpty(line = reader.readLine())) {
-					System.out.println("Line: " +line);
-					String key = StringUtils.substringBefore(line, HEADER_KEY_VALUE_SEPARATOR);
-					String value = StringUtils.substringAfter(line, HEADER_KEY_VALUE_SEPARATOR);
-					headers.put(key, value);
-				}
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
+	//TODO be aware of query strings
+	//TODO should be static?
+	//TODO nice for tests
+	private static RequestInfo extractRequestInfo(BufferedReader reader) throws IOException {
+		RequestInfo result = null;
+		String data = reader.readLine();
+		if (StringUtils.isNotEmpty(data)) {
+			System.out.println("First line: " + data);
+			String[] parameters = data.split(" ");
+			String method = parameters[HTTP_METHOD_PARAM_INDEX];
+			String uri = parameters[URI_PARAM_INDEX];
+			String httpVersion = parameters[HTTP_VERSION_PARAM_INDEX];
+			result = new RequestInfo(method, uri, httpVersion);
 		}
-		return new Request(method, uri, httpVersion, headers);
+		return result;
 	}
 
-	public HttpMethod getMethod() {
-		return method;
+	private static Map<String, String> extractRequestHeaders(BufferedReader reader) throws IOException {
+		Map<String, String> headers = new HashMap<>();
+		String line;
+		while (StringUtils.isNotEmpty(line = reader.readLine())) {
+			System.out.println("Line: " + line);
+			String key = StringUtils.substringBefore(line, HEADER_KEY_VALUE_SEPARATOR);
+			String value = StringUtils.substringAfter(line, HEADER_KEY_VALUE_SEPARATOR);
+			headers.put(key, value);
+		}
+		return headers;
 	}
 
-	public String getUri() {
-		return uri;
-	}
-
-	public String getHttpVersion() {
-		return httpVersion;
-	}
-
-	public Map<String, String> getHeaders() {
-		return Collections.unmodifiableMap(headers);
+	public RequestInfo getRequestInfo() {
+		return requestInfo;
 	}
 }

@@ -1,36 +1,33 @@
 Feature: run different requests to webserver and check responses
 
-  Scenario:send GET request and check if response has 200 code
-    Given url 'http://localhost:65535'
+  Scenario:server returns 200 code when text file is requested
+    Given url INSTANCE_URL +'/test.txt'
     When method get
     Then status 200
 
+  Scenario:server returns 404 code when non existing resource is requested
+    Given url INSTANCE_URL +'/nonexisting'
+    When method get
+    Then status 404
 
-  Scenario:send POST request and check if response has 501 code
-    * def randomRequestBody =
-    """
-    {
-      "name": "Test"
-    }
-    """
-    Given url 'http://localhost:65535'
-    And request randomRequestBody
+  Scenario:server returns 501 code when directory is requested
+    Given url INSTANCE_URL
+    When method get
+    Then status 501
+
+  Scenario:server returns 201 code when post request executed
+    Given url INSTANCE_URL + '/newfile.txt'
+    And multipart file myFile = { read: 'lorem_ipsum.txt', filename: 'lorem_ipsum.txt', contentType: 'text/plain' }
     When method post
     Then status 501
 
-  Scenario:send PUT request and check if response has 501 code
-    * def randomRequestBody =
-    """
-    {
-      "name": "Test"
-    }
-    """
-    Given url 'http://localhost:65535'
-    And request randomRequestBody
+  Scenario:server returns 501 code when put request executed
+    Given url INSTANCE_URL + '/updatedfile.txt'
+    And multipart file myFile = { read: 'lorem_ipsum.txt', filename: 'lorem_ipsum.txt', contentType: 'text/plain' }
     When method put
     Then status 501
 
-  Scenario:send DELETE request and check if response has 501 code
-    Given url 'http://localhost:65535'
+  Scenario:server returns 501 code when delete request executed
+    Given url INSTANCE_URL
     When method delete
     Then status 501

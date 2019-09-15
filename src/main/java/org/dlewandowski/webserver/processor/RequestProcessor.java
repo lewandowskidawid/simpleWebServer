@@ -16,6 +16,8 @@ public class RequestProcessor {
 
 	private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 
+	private static final String QUERY_STRING_MARK = "?";
+
 	private final Request request;
 
 	private final Response response;
@@ -30,7 +32,7 @@ public class RequestProcessor {
 
 	public void processRequest() {
 		if ("GET".equals(request.getRequestInfo().getMethod())) {
-			File requestedFile = getRequestedFile();
+			File requestedFile = getRequestedResource();
 			if (requestedFile.exists()) {
 				if (requestedFile.isDirectory()) {
 					sendNotImplementedOperationResponse();
@@ -80,8 +82,9 @@ public class RequestProcessor {
 		response.addHeader("Date", DATE_FORMAT.format(new Date()));
 	}
 
-	private File getRequestedFile() {
-		return new File(directoryPath + request.getRequestInfo().getUri());
+	private File getRequestedResource() {
+		String url = StringUtils.substringBefore(request.getRequestInfo().getUri(), QUERY_STRING_MARK);
+		return new File(directoryPath + url);
 	}
 
 }

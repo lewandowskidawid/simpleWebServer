@@ -4,6 +4,7 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
 import org.apache.commons.lang3.StringUtils;
 import org.dlewandowski.webserver.server.Server;
 
@@ -15,7 +16,7 @@ public class App {
 
 	public static final int DEFAULT_THREADS_NUMBER = 10;
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws ParseException {
 		Options options = getOptions();
 		CommandLine commandLine = new DefaultParser().parse(options, args);
 
@@ -23,7 +24,6 @@ public class App {
 			displayUsage(options);
 			return;
 		}
-		commandLine.getOptionValue("p");
 		int port = getOptionValue(commandLine, "p", DEFAULT_PORT);
 		int threadsPoolSize = getOptionValue(commandLine, "t", DEFAULT_THREADS_NUMBER);
 		String serverRoot = getOptionValue(commandLine, "d", DEFAULT_SERVER_ROOT);
@@ -63,6 +63,7 @@ public class App {
 	}
 
 	private static String getOptionValue(CommandLine commandLine, String optionName, String defaultValue) {
-		return commandLine.hasOption(optionName) ? commandLine.getOptionValue(optionName) : defaultValue;
+		String optionValue = commandLine.getOptionValue(optionName);
+		return StringUtils.isNotEmpty(optionValue) ? optionValue : defaultValue;
 	}
 }

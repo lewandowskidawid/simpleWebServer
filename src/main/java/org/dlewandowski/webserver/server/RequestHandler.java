@@ -3,11 +3,14 @@ package org.dlewandowski.webserver.server;
 import java.io.IOException;
 import java.net.Socket;
 
+import org.apache.log4j.Logger;
 import org.dlewandowski.webserver.processor.RequestProcessor;
 import org.dlewandowski.webserver.request.Request;
 import org.dlewandowski.webserver.response.Response;
 
 class RequestHandler implements Runnable {
+
+	private static final Logger LOGGER = Logger.getLogger(RequestHandler.class);
 
 	private final Socket socket;
 
@@ -27,7 +30,7 @@ class RequestHandler implements Runnable {
 			requestProcessor.processRequest();
 			response.flush();
 		} catch (IOException e) {
-			e.printStackTrace();
+			LOGGER.error("Cannot serve the request", e);
 		} finally {
 			closeSocket();
 		}
@@ -38,7 +41,7 @@ class RequestHandler implements Runnable {
 			try {
 				socket.close();
 			} catch (IOException e) {
-				e.printStackTrace();
+				LOGGER.error("Cannot close the socket", e);
 			}
 		}
 	}

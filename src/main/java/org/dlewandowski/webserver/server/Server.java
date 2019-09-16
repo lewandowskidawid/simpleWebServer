@@ -1,5 +1,6 @@
 package org.dlewandowski.webserver.server;
 
+import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.ExecutorService;
@@ -21,7 +22,7 @@ public class Server {
 		this.threadsNumber = threadsNumber;
 	}
 
-	public void start() {
+	public void start() throws IOException {
 		try (ServerSocket listener = new ServerSocket(port)) {
 			executorService = Executors.newFixedThreadPool(threadsNumber);
 			System.out.println("The date server is running...");
@@ -29,16 +30,10 @@ public class Server {
 				Socket socket = listener.accept();
 				executorService.execute(new RequestHandler(socket, directory));
 			}
-		} catch (Throwable e) {
-			e.printStackTrace();
 		} finally {
 			if (executorService != null) {
 				executorService.shutdownNow();
 			}
 		}
-	}
-
-	public void stop() {
-//ToDO is it needed or finally statement is enough
 	}
 }

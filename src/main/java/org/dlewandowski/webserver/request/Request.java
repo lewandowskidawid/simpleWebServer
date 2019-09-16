@@ -17,7 +17,7 @@ public class Request {
 
 	private static final int HTTP_VERSION_PARAM_INDEX = 2;
 
-	private static final String HEADER_KEY_VALUE_SEPARATOR = ":";
+	private static final String HEADER_KEY_VALUE_SEPARATOR = ": ";
 
 	private final RequestInfo requestInfo;
 
@@ -29,7 +29,6 @@ public class Request {
 	}
 
 	public static Request from(Socket socket) throws IOException {
-		System.out.println("New Request");
 		InputStreamReader streamReader = new InputStreamReader(socket.getInputStream());
 		BufferedReader reader = new BufferedReader(streamReader);
 		RequestInfo requestInfo = extractRequestInfo(reader);
@@ -37,14 +36,10 @@ public class Request {
 		return new Request(requestInfo, headers);
 	}
 
-	//TODO be aware of query strings
-	//TODO should be static?
-	//TODO nice for tests
 	private static RequestInfo extractRequestInfo(BufferedReader reader) throws IOException {
 		RequestInfo result = null;
 		String data = reader.readLine();
 		if (StringUtils.isNotEmpty(data)) {
-			System.out.println("First line: " + data);
 			String[] parameters = data.split(" ");
 			String method = parameters[HTTP_METHOD_PARAM_INDEX];
 			String uri = parameters[URI_PARAM_INDEX];
@@ -58,7 +53,6 @@ public class Request {
 		Map<String, String> headers = new HashMap<>();
 		String line;
 		while (StringUtils.isNotEmpty(line = reader.readLine())) {
-			System.out.println("Line: " + line);
 			String key = StringUtils.substringBefore(line, HEADER_KEY_VALUE_SEPARATOR);
 			String value = StringUtils.substringAfter(line, HEADER_KEY_VALUE_SEPARATOR);
 			headers.put(key, value);
@@ -68,5 +62,9 @@ public class Request {
 
 	public RequestInfo getRequestInfo() {
 		return requestInfo;
+	}
+
+	public boolean isKeepAliveConnection() {
+		return headers.getOrDefault("Connection", StringUtils.EMPTY).equalsIgnoreCase("Keep-Alive");
 	}
 }

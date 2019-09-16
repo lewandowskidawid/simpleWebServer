@@ -1,11 +1,14 @@
 package org.dlewandowski.webserver;
 
+import java.io.IOException;
+
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.log4j.PropertyConfigurator;
 import org.dlewandowski.webserver.server.Server;
 
 public class App {
@@ -14,9 +17,10 @@ public class App {
 
 	public static final String DEFAULT_SERVER_ROOT = ".";
 
-	public static final int DEFAULT_THREADS_NUMBER = 10;
+	public static final int DEFAULT_THREADS_NUMBER = 20;
 
-	public static void main(String[] args) throws ParseException {
+	public static void main(String[] args) throws IOException, ParseException {
+		PropertyConfigurator.configure(App.class.getClassLoader().getResourceAsStream("logging.properties"));
 		Options options = getOptions();
 		CommandLine commandLine = new DefaultParser().parse(options, args);
 
@@ -24,20 +28,19 @@ public class App {
 			displayUsage(options);
 			return;
 		}
+
 		int port = getOptionValue(commandLine, "p", DEFAULT_PORT);
 		int threadsPoolSize = getOptionValue(commandLine, "t", DEFAULT_THREADS_NUMBER);
 		String serverRoot = getOptionValue(commandLine, "d", DEFAULT_SERVER_ROOT);
 
-		System.out.println(serverRoot);
 		Server server = new Server(serverRoot, port, threadsPoolSize);
-		Runtime.getRuntime().addShutdownHook(new Thread(() -> server.stop()));
 		server.start();
 	}
 
 	private static Options getOptions() {
 		Options options = new Options();
 		options.addOption("p", true, "HTTP port number to run the server. Default value: " + DEFAULT_PORT);
-		options.addOption("d", true, "directory path which content will be exposed by the server. Default value: " + DEFAULT_SERVER_ROOT);
+		options.addOption("d", true, "server root directory. Default value: " + DEFAULT_SERVER_ROOT);
 		options.addOption("t", true, "number of threads used by server incoming requests. Default value: " + DEFAULT_THREADS_NUMBER);
 		options.addOption("h", false, "help");
 		return options;
@@ -53,11 +56,7 @@ public class App {
 		int result = defaultValue;
 		String optionValue = commandLine.getOptionValue(optionName);
 		if (StringUtils.isNotEmpty(optionValue)) {
-			try {
-				result = Integer.parseInt(optionName);
-			} catch (NumberFormatException e) {
-
-			}
+			result = Integer.parseInt(optionName);
 		}
 		return result;
 	}

@@ -44,9 +44,6 @@ public class GetRequestProcessor {
 		response.setResponseCode(ResponseCode.SUCCESS);
 		response.addHeader("Date", new Date());
 		response.addHeader("Content-Length", String.valueOf(requestedFile.length()));
-		if (request.isKeepAliveConnection()) {
-			response.addHeader("Connection", "Keep-Alive");
-		}
 		if (StringUtils.isNotEmpty(mimeType)) {
 			response.addHeader("Content-Type", mimeType);
 		}

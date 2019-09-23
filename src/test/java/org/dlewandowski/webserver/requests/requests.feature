@@ -7,16 +7,6 @@ Feature: run different requests to webserver and check responses
     Then match header Content-Type == 'text/html'
     Then match response contains 'Design a better website template.'
 
-  Scenario:server supports keep alive connections
-    Given url INSTANCE_URL +'/index.html'
-    And header Connection = 'Keep-Alive'
-    When method get
-    Then status 200
-    Then match header Content-Type == 'text/html'
-    Then match header Connection == 'Keep-Alive'
-    Then match header Keep-Alive == 'timeout=5'
-    Then match response contains 'Design a better website template.'
-
   Scenario:server returns proper resource when query string is present
     Given url INSTANCE_URL +'/index.html?queryString=123'
     When method get

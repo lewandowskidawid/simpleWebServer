@@ -63,8 +63,4 @@ public class Request {
 	public RequestInfo getRequestInfo() {
 		return requestInfo;
 	}
-
-	public boolean isKeepAliveConnection() {
-		return headers.getOrDefault("Connection", StringUtils.EMPTY).equalsIgnoreCase("Keep-Alive");
-	}
 }

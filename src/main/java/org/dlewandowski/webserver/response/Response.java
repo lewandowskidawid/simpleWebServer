@@ -4,14 +4,12 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.net.SocketException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.lang3.StringUtils;
 import org.dlewandowski.webserver.request.Request;
 
 public class Response {
@@ -54,18 +52,15 @@ public class Response {
 		headers.put(key, DATE_FORMAT.format(value));
 	}
 
-	public OutputStream getOutputStream() throws SocketException {
+	public OutputStream getOutputStream() {
 		if (!committed) {
 			commit();
 		}
 		return outputStream;
 	}
 
-	public void commit() throws SocketException {
+	public void commit() {
 		if (!committed) {
-			if (isKeepAliveConnectionRequested()) {
-				configureKeepAliveConnection();
-			}
 			sendHeaders();
 			committed = true;
 		}
@@ -74,16 +69,6 @@ public class Response {
 	public void flush() throws IOException {
 		commit();
 		outputStream.flush();
-	}
-
-	private boolean isKeepAliveConnectionRequested() {
-		return headers.getOrDefault("Connection", StringUtils.EMPTY).equalsIgnoreCase("Keep-Alive");
-	}
-
-	private void configureKeepAliveConnection() throws SocketException {
-		socket.setKeepAlive(true);
-		socket.setSoTimeout(50000);
-		addHeader("Keep-Alive", "timeout=5");
 	}
 
 	private void sendHeaders() {

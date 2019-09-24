@@ -14,34 +14,32 @@ import org.dlewandowski.webserver.request.Request;
 
 public class Response {
 
-	private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-
 	private final String httpVersion;
-
-	private final OutputStream outputStream;
 
 	private final Socket socket;
 
 	private final Map<String, String> headers;
 
-	private ResponseCode responseCode;
+	private final DateFormat dateFormat;
+
+	private ResponseStatus responseStatus;
 
 	private boolean committed;
 
-	private Response(String httpVersion, Socket socket) throws IOException {
+	private Response(String httpVersion, Socket socket) {
 		this.httpVersion = httpVersion;
-		this.outputStream = socket.getOutputStream();
 		this.socket = socket;
 		this.headers = new HashMap<>();
+		this.dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 		this.committed = false;
 	}
 
-	public static Response from(Socket socket, Request request) throws IOException {
+	public static Response from(Socket socket, Request request) {
 		return new Response(request.getRequestInfo().getHttpVersion(), socket);
 	}
 
-	public void setResponseCode(ResponseCode responseCode) {
-		this.responseCode = responseCode;
+	public void setResponseStatus(ResponseStatus responseStatus) {
+		this.responseStatus = responseStatus;
 	}
 
 	public void addHeader(String key, String value) {
@@ -49,31 +47,31 @@ public class Response {
 	}
 
 	public void addHeader(String key, Date value) {
-		headers.put(key, DATE_FORMAT.format(value));
+		headers.put(key, dateFormat.format(value));
 	}
 
-	public OutputStream getOutputStream() {
+	public OutputStream getOutputStream() throws IOException {
 		if (!committed) {
 			commit();
 		}
-		return outputStream;
+		return socket.getOutputStream();
 	}
 
-	public void commit() {
+	public void flush() throws IOException {
+		getOutputStream().flush();
+	}
+
+	private void commit() throws IOException {
 		if (!committed) {
 			sendHeaders();
 			committed = true;
 		}
 	}
 
-	public void flush() throws IOException {
-		commit();
-		outputStream.flush();
-	}
-
-	private void sendHeaders() {
-		final PrintWriter writer = new PrintWriter(outputStream);
-		writer.println(String.format("%s %d %s", httpVersion, responseCode.getResponseCode(), responseCode.getMessage()));
+	private void sendHeaders() throws IOException {
+		//OutputStrem needs to be directly requrested from socket to avoid loop
+		final PrintWriter writer = new PrintWriter(socket.getOutputStream());
+		writer.println(String.format("%s %d %s", httpVersion, responseStatus.getCode(), responseStatus.getMessage()));
 		for (Map.Entry<String, String> header : headers.entrySet()) {
 			writer.println(header.getKey() + ": " + header.getValue());
 		}

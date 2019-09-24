@@ -6,7 +6,11 @@ import java.net.Socket;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import org.apache.log4j.Logger;
+
 public class Server {
+
+	private static final Logger LOGGER = Logger.getLogger(Server.class);
 
 	private final String directory;
 
@@ -25,7 +29,7 @@ public class Server {
 	public void start() throws IOException {
 		try (ServerSocket listener = new ServerSocket(port)) {
 			executorService = Executors.newFixedThreadPool(threadsNumber);
-			System.out.println("The date server is running...");
+			LOGGER.info("Server runs at: http://localhost:" + port);
 			while (true) {
 				Socket socket = listener.accept();
 				executorService.execute(new RequestHandler(socket, directory));

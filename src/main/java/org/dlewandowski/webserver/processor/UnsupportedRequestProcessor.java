@@ -3,9 +3,9 @@ package org.dlewandowski.webserver.processor;
 import java.util.Date;
 
 import org.dlewandowski.webserver.response.Response;
-import org.dlewandowski.webserver.response.ResponseCode;
+import org.dlewandowski.webserver.response.ResponseStatus;
 
-public class UnsupportedRequestProcessor {
+class UnsupportedRequestProcessor {
 
 	private final Response response;
 
@@ -18,7 +18,7 @@ public class UnsupportedRequestProcessor {
 	}
 
 	private void sendNotImplementedOperationResponse() {
-		response.setResponseCode(ResponseCode.NOT_IMPLEMENTED_OPERATION);
+		response.setResponseStatus(ResponseStatus.NOT_IMPLEMENTED_OPERATION);
 		response.addHeader("Date", new Date());
 	}
 }

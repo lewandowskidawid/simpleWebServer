@@ -8,9 +8,9 @@ import java.util.Date;
 import org.apache.commons.lang3.StringUtils;
 import org.dlewandowski.webserver.request.Request;
 import org.dlewandowski.webserver.response.Response;
-import org.dlewandowski.webserver.response.ResponseCode;
+import org.dlewandowski.webserver.response.ResponseStatus;
 
-public class GetRequestProcessor {
+class GetRequestProcessor {
 
 	private static final String QUERY_STRING_MARK = "?";
 
@@ -41,7 +41,7 @@ public class GetRequestProcessor {
 
 	private void sendRequestedFile(File requestedFile) throws IOException {
 		String mimeType = getFileMimeType(requestedFile);
-		response.setResponseCode(ResponseCode.SUCCESS);
+		response.setResponseStatus(ResponseStatus.SUCCESS);
 		response.addHeader("Date", new Date());
 		response.addHeader("Content-Length", String.valueOf(requestedFile.length()));
 		if (StringUtils.isNotEmpty(mimeType)) {
@@ -55,12 +55,12 @@ public class GetRequestProcessor {
 	}
 
 	private void sendNonExistingResourceResponse() {
-		response.setResponseCode(ResponseCode.NON_EXISTING_RESOURCE);
+		response.setResponseStatus(ResponseStatus.NON_EXISTING_RESOURCE);
 		response.addHeader("Date", new Date());
 	}
 
 	private void sendNotImplementedOperationResponse() {
-		response.setResponseCode(ResponseCode.NOT_IMPLEMENTED_OPERATION);
+		response.setResponseStatus(ResponseStatus.NOT_IMPLEMENTED_OPERATION);
 		response.addHeader("Date", new Date());
 	}
 

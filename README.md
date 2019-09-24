@@ -1,4 +1,6 @@
-<!-- TABLE OF CONTENTS -->
+[![Build Status](https://travis-ci.com/lewandowskidawid/simpleWebServer.svg?branch=master)](https://travis-ci.com/lewandowskidawid/simpleWebServer)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=simpleWebServer&metric=alert_status)](https://sonarcloud.io/dashboard?id=simpleWebServer)
+
 ## Table of Contents
 
 * [About the Project](#about-the-project)

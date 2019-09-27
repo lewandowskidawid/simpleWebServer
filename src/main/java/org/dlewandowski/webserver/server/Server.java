@@ -31,13 +31,21 @@ public class Server {
 			executorService = Executors.newFixedThreadPool(threadsNumber);
 			LOGGER.info("Server runs at: http://localhost:" + port);
 			while (true) {
-				Socket socket = listener.accept();
-				executorService.execute(new RequestHandler(socket, directory));
+				try {
+					Socket socket = listener.accept();
+					executorService.execute(new RequestHandler(socket, directory));
+				} catch (RuntimeException e) {
+					LOGGER.error(e.getMessage(), e);
+				}
 			}
 		} finally {
-			if (executorService != null) {
-				executorService.shutdownNow();
-			}
+			stop();
+		}
+	}
+
+	public void stop() {
+		if (executorService != null) {
+			executorService.shutdownNow();
 		}
 	}
 }

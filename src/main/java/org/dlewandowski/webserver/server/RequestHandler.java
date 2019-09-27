@@ -28,6 +28,8 @@ class RequestHandler implements Runnable {
 			Response response = Response.from(socket, request);
 			RequestProcessor requestProcessor = new RequestProcessor(request, response, directoryPath);
 			requestProcessor.processRequest();
+			LOGGER.debug(String.format("Request: %d %d, %s %s", Thread.currentThread().getId(), response.getResponseStatus().getCode(),
+					request.getRequestInfo().getMethod(), request.getRequestInfo().getResourcePath()));
 			response.flush();
 		} catch (IOException e) {
 			LOGGER.error("Cannot serve the request", e);

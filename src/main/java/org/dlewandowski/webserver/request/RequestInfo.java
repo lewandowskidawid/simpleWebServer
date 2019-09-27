@@ -1,5 +1,7 @@
 package org.dlewandowski.webserver.request;
 
+import java.net.URI;
+
 public class RequestInfo {
 
 	private final String method;
@@ -10,7 +12,7 @@ public class RequestInfo {
 
 	public RequestInfo(String method, String uri, String httpVersion) {
 		this.method = method;
-		this.uri = uri;
+		this.uri = URI.create(uri).getPath();
 		this.httpVersion = httpVersion;
 	}
 
@@ -18,7 +20,7 @@ public class RequestInfo {
 		return method;
 	}
 
-	public String getUri() {
+	public String getResourcePath() {
 		return uri;
 	}
 

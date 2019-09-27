@@ -61,6 +61,10 @@ public class Response {
 		getOutputStream().flush();
 	}
 
+	public ResponseStatus getResponseStatus() {
+		return responseStatus;
+	}
+
 	private void commit() throws IOException {
 		if (!committed) {
 			sendHeaders();
@@ -69,7 +73,7 @@ public class Response {
 	}
 
 	private void sendHeaders() throws IOException {
-		//OutputStrem needs to be directly requrested from socket to avoid loop
+		//OutputStream needs to be directly requrested from socket to avoid loop
 		final PrintWriter writer = new PrintWriter(socket.getOutputStream());
 		writer.println(String.format("%s %d %s", httpVersion, responseStatus.getCode(), responseStatus.getMessage()));
 		for (Map.Entry<String, String> header : headers.entrySet()) {

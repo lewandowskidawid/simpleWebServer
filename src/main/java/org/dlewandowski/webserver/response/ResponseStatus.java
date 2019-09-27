@@ -2,6 +2,7 @@ package org.dlewandowski.webserver.response;
 
 public enum ResponseStatus {
 	SUCCESS(200, "OK"),
+	FORBIDDEN(403, "FORBIDDEN"),
 	NON_EXISTING_RESOURCE(404, "Not Found"),
 	NOT_IMPLEMENTED_OPERATION(501, "Not Implemented");
 

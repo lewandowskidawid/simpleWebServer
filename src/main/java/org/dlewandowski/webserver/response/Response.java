@@ -7,7 +7,7 @@ import java.net.Socket;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.dlewandowski.webserver.request.Request;
@@ -29,7 +29,7 @@ public class Response {
 	private Response(String httpVersion, Socket socket) {
 		this.httpVersion = httpVersion;
 		this.socket = socket;
-		this.headers = new HashMap<>();
+		this.headers = new LinkedHashMap<>();
 		this.dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 		this.committed = false;
 	}

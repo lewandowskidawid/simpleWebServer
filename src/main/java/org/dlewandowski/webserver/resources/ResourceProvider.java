@@ -6,15 +6,12 @@ public class ResourceProvider {
 
 	private final String directoryPath;
 
-	private final String requestedResource;
-
-	public ResourceProvider(String directoryPath, String requestedResource) {
+	public ResourceProvider(String directoryPath) {
 		this.directoryPath = directoryPath;
-		this.requestedResource = requestedResource;
 	}
 
-	public File getResource() {
-		File result = new File(directoryPath + requestedResource);
+	public File getResource(String resource) {
+		File result = new File(directoryPath + resource);
 		if (result.isDirectory()) {
 			File indexFile = result.toPath().resolve("index.html").toFile();
 			if (indexFile.exists()) {

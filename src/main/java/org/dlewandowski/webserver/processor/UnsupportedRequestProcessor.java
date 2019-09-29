@@ -5,7 +5,7 @@ import java.util.Date;
 import org.dlewandowski.webserver.response.Response;
 import org.dlewandowski.webserver.response.ResponseStatus;
 
-class UnsupportedRequestProcessor {
+class UnsupportedRequestProcessor implements RequestProcessor {
 
 	private final Response response;
 
@@ -13,7 +13,8 @@ class UnsupportedRequestProcessor {
 		this.response = response;
 	}
 
-	public void processRequest() {
+	@Override
+	public void process() {
 		sendNotImplementedOperationResponse();
 	}
 

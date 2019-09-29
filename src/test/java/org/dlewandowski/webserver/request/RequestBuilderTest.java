@@ -13,21 +13,23 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-class RequestTest {
+class RequestBuilderTest {
 
 	@Mock
 	private Socket socket;
 
 	@Test
-	public void createRequestObject() throws IOException {
+	public void testRequestCreation() throws IOException {
 		try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream("org/dlewandowski/webserver/request/request_data.txt")) {
 			when(socket.getInputStream()).thenReturn(inputStream);
 
-			Request tester = Request.from(socket);
+			RequestBuilder tester = new RequestBuilder();
+			Request request = tester.from(socket);
 
-			assertEquals("GET", tester.getRequestInfo().getMethod());
-			assertEquals("/index.html", tester.getRequestInfo().getResourcePath());
-			assertEquals("HTTP/1.1", tester.getRequestInfo().getHttpVersion());
+			assertEquals("GET", request.getRequestInfo().getMethod());
+			assertEquals("/index.html", request.getRequestInfo().getResourcePath());
+			assertEquals("HTTP/1.1", request.getRequestInfo().getHttpVersion());
 		}
 	}
+
 }

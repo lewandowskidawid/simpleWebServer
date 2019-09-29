@@ -12,7 +12,7 @@ class RequestInfoTest {
 
 	@ParameterizedTest
 	@MethodSource("provideArguments")
-	public void checkHowParametersAreTranslated(String method, String url, String httpVersion, String expectedMethod, String expectedPath,
+	public void testObjectCreation(String method, String url, String httpVersion, String expectedMethod, String expectedPath,
 			String expectedVersion) {
 		RequestInfo tester = new RequestInfo(method, url, httpVersion);
 

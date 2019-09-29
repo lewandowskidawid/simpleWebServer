@@ -14,8 +14,8 @@ class ResourceProviderTest {
 	@ParameterizedTest
 	@MethodSource("provideArguments")
 	public void testResourceProvider(String directory, String resource, String expectedResourcePath) {
-		ResourceProvider tester = new ResourceProvider(directory, resource);
-		File currentFile = tester.getResource();
+		ResourceProvider tester = new ResourceProvider(directory);
+		File currentFile = tester.getResource(resource);
 
 		File expectedFile = new File(expectedResourcePath);
 

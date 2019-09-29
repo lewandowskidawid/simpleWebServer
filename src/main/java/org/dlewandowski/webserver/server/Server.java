@@ -7,6 +7,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import org.apache.log4j.Logger;
+import org.dlewandowski.webserver.processor.RequestProcessorProvider;
+import org.dlewandowski.webserver.request.RequestBuilder;
+import org.dlewandowski.webserver.response.ResponseBuilder;
 
 public class Server {
 
@@ -27,13 +30,16 @@ public class Server {
 	}
 
 	public void start() throws IOException {
+		RequestBuilder requestBuilder = new RequestBuilder();
+		ResponseBuilder responseBuilder = new ResponseBuilder();
+		RequestProcessorProvider requestProcessorProvider = new RequestProcessorProvider();
 		try (ServerSocket listener = new ServerSocket(port)) {
 			executorService = Executors.newFixedThreadPool(threadsNumber);
 			LOGGER.info("Server runs at: http://localhost:" + port);
 			while (true) {
 				try {
 					Socket socket = listener.accept();
-					executorService.execute(new RequestHandler(socket, directory));
+					executorService.execute(new RequestHandler(socket, directory, requestBuilder, responseBuilder, requestProcessorProvider));
 				} catch (RuntimeException e) {
 					LOGGER.error(e.getMessage(), e);
 				}

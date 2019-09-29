@@ -14,7 +14,7 @@ import org.dlewandowski.webserver.resources.ResourceProvider;
 import org.dlewandowski.webserver.response.Response;
 import org.dlewandowski.webserver.response.ResponseStatus;
 
-class GetRequestProcessor {
+class GetRequestProcessor implements RequestProcessor {
 
 	private static final byte[] DOES_NOT_EXIStS = "Requested resource dost not exist".getBytes();
 
@@ -22,16 +22,17 @@ class GetRequestProcessor {
 
 	private final Response response;
 
-	private final String directoryPath;
+	private final ResourceProvider resourceProvider;
 
-	public GetRequestProcessor(Request request, Response response, String directoryPath) {
+	public GetRequestProcessor(Request request, Response response, ResourceProvider resourceProvider) {
 		this.request = request;
 		this.response = response;
-		this.directoryPath = directoryPath;
+		this.resourceProvider = resourceProvider;
 	}
 
-	public void processRequest() throws IOException {
-		File requestedFile = getRequestedResource();
+	@Override
+	public void process() throws IOException {
+		File requestedFile = resourceProvider.getResource(request.getRequestInfo().getResourcePath());
 		if (requestedFile.exists() && requestedFile.canRead()) {
 			if (requestedFile.isDirectory()) {
 				sendForbiddenOperationResponse();
@@ -69,11 +70,6 @@ class GetRequestProcessor {
 	private void sendForbiddenOperationResponse() {
 		response.setResponseStatus(ResponseStatus.FORBIDDEN);
 		response.addHeader("Date", new Date());
-	}
-
-	private File getRequestedResource() {
-		ResourceProvider resourceProvider = new ResourceProvider(directoryPath, request.getRequestInfo().getResourcePath());
-		return resourceProvider.getResource();
 	}
 
 }

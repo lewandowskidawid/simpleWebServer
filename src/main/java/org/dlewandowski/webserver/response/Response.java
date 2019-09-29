@@ -10,8 +10,6 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import org.dlewandowski.webserver.request.Request;
-
 public class Response {
 
 	private final String httpVersion;
@@ -26,16 +24,12 @@ public class Response {
 
 	private boolean committed;
 
-	private Response(String httpVersion, Socket socket) {
+	Response(String httpVersion, Socket socket) {
 		this.httpVersion = httpVersion;
 		this.socket = socket;
 		this.headers = new LinkedHashMap<>();
 		this.dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 		this.committed = false;
-	}
-
-	public static Response from(Socket socket, Request request) {
-		return new Response(request.getRequestInfo().getHttpVersion(), socket);
 	}
 
 	public void setResponseStatus(ResponseStatus responseStatus) {

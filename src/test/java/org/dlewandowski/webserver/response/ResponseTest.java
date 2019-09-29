@@ -22,7 +22,7 @@ import org.junit.jupiter.api.Test;
 class ResponseTest {
 
 	@Test
-	public void testRegularScenario() throws IOException {
+	public void testResponseOutput() throws IOException {
 		PipedInputStream pipeInput = new PipedInputStream();
 		BufferedReader reader = new BufferedReader(new InputStreamReader(pipeInput));
 		BufferedOutputStream out = new BufferedOutputStream(new PipedOutputStream(pipeInput));
@@ -32,7 +32,8 @@ class ResponseTest {
 		when(socket.getOutputStream()).thenReturn(out);
 		when(request.getRequestInfo()).thenReturn(new RequestInfo("GET", "/", "HTTP/1.1"));
 
-		Response tester = Response.from(socket, request);
+		ResponseBuilder responseBuilder = new ResponseBuilder();
+		Response tester = responseBuilder.from(socket, request);
 
 		tester.setResponseStatus(ResponseStatus.SUCCESS);
 		tester.addHeader("HeaderName1", "HeaderValue1");

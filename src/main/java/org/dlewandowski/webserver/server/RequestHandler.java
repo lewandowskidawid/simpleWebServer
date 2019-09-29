@@ -5,8 +5,11 @@ import java.net.Socket;
 
 import org.apache.log4j.Logger;
 import org.dlewandowski.webserver.processor.RequestProcessor;
+import org.dlewandowski.webserver.processor.RequestProcessorProvider;
 import org.dlewandowski.webserver.request.Request;
+import org.dlewandowski.webserver.request.RequestBuilder;
 import org.dlewandowski.webserver.response.Response;
+import org.dlewandowski.webserver.response.ResponseBuilder;
 
 class RequestHandler implements Runnable {
 
@@ -16,21 +19,31 @@ class RequestHandler implements Runnable {
 
 	private final String directoryPath;
 
-	public RequestHandler(Socket socket, String directoryPath) {
+	private final RequestBuilder requestBuilder;
+
+	private final ResponseBuilder responseBuilder;
+
+	private final RequestProcessorProvider requestProcessorProvider;
+
+	public RequestHandler(Socket socket, String directoryPath, RequestBuilder requestBuilder, ResponseBuilder responseBuilder,
+			RequestProcessorProvider requestProcessorProvider) {
 		this.socket = socket;
 		this.directoryPath = directoryPath;
+		this.requestBuilder = requestBuilder;
+		this.responseBuilder = responseBuilder;
+		this.requestProcessorProvider = requestProcessorProvider;
 	}
 
 	@Override
 	public void run() {
 		try {
-			Request request = Request.from(socket);
-			Response response = Response.from(socket, request);
-			RequestProcessor requestProcessor = new RequestProcessor(request, response, directoryPath);
-			requestProcessor.processRequest();
+			Request request = requestBuilder.from(socket);
+			Response response = responseBuilder.from(socket, request);
+			RequestProcessor requestProcessor = requestProcessorProvider.get(request, response, directoryPath);
+			requestProcessor.process();
+			response.flush();
 			LOGGER.debug(String.format("Request: %d %d, %s %s", Thread.currentThread().getId(), response.getResponseStatus().getCode(),
 					request.getRequestInfo().getMethod(), request.getRequestInfo().getResourcePath()));
-			response.flush();
 		} catch (IOException e) {
 			LOGGER.error("Cannot serve the request", e);
 		} finally {

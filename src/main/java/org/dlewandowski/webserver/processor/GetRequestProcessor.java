@@ -2,7 +2,6 @@ package org.dlewandowski.webserver.processor;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.Files;
 import java.util.Date;
 
@@ -14,6 +13,9 @@ import org.dlewandowski.webserver.resources.ResourceProvider;
 import org.dlewandowski.webserver.response.Response;
 import org.dlewandowski.webserver.response.ResponseStatus;
 
+/**
+ * The class is responsible for handling all GET requests
+ */
 class GetRequestProcessor implements RequestProcessor {
 
 	private static final byte[] DOES_NOT_EXIStS = "Requested resource dost not exist".getBytes();
@@ -56,8 +58,7 @@ class GetRequestProcessor implements RequestProcessor {
 	}
 
 	private String getFileMimeType(File requestedFile) {
-		InputStream inputStream = GetRequestProcessor.class.getClassLoader().getResourceAsStream("mimetypes.default");
-		return new MimetypesFileTypeMap(inputStream).getContentType(requestedFile);
+		return new MimetypesFileTypeMap().getContentType(requestedFile);
 	}
 
 	private void sendNonExistingResourceResponse() throws IOException {

@@ -1,5 +1,8 @@
 package org.dlewandowski.webserver.response;
 
+/**
+ * Contains list of HTTP codes supported by the application. Each {@link ResponseStatus} contains HTTP code and message. The {@link @ResponseStatus}
+ */
 public enum ResponseStatus {
 	SUCCESS(200, "OK"),
 	FORBIDDEN(403, "FORBIDDEN"),

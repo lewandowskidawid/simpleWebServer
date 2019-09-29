@@ -7,6 +7,9 @@ import java.net.Socket;
 
 import org.apache.commons.lang3.StringUtils;
 
+/**
+ * Creates {@link Request} objects base of data from {@link Socket}
+ */
 public class RequestBuilder {
 
 	private static final int HTTP_METHOD_PARAM_INDEX = 0;

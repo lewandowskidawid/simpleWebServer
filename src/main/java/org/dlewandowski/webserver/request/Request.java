@@ -1,5 +1,8 @@
 package org.dlewandowski.webserver.request;
 
+/**
+ * Contains basic information about received request.
+ */
 public class Request {
 
 	private final RequestInfo requestInfo;

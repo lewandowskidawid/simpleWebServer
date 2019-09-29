@@ -2,6 +2,9 @@ package org.dlewandowski.webserver.request;
 
 import java.net.URI;
 
+/**
+ * Exposes basic request parameters.
+ */
 public class RequestInfo {
 
 	private final String method;

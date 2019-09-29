@@ -1,4 +1,4 @@
-package org.dlewandowski.webserver.requests;
+package org.dlewandowski.webserver.functional;
 
 import com.intuit.karate.junit5.Karate;
 

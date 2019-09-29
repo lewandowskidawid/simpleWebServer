@@ -5,6 +5,9 @@ import java.util.Date;
 import org.dlewandowski.webserver.response.Response;
 import org.dlewandowski.webserver.response.ResponseStatus;
 
+/**
+ * The class is responsible for handling all unsupported request types
+ */
 class UnsupportedRequestProcessor implements RequestProcessor {
 
 	private final Response response;

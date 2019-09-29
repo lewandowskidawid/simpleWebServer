@@ -23,6 +23,10 @@ A multi-threaded file-based web server. The server supports only GET (read) oper
 * [Apache Commons CLI](https://commons.apache.org/proper/commons-cli/)
 * [Karate](https://github.com/intuit/karate)
 * [Exec Maven Plugin](https://www.mojohaus.org/exec-maven-plugin/)
+* [JUnit 5](https://junit.org/junit5/)
+* [Jacoco](https://www.eclemma.org/jacoco/)
+* [Sonar Cloud](https://sonarcloud.io/dashboard?id=simpleWebServer)
+* [Travis CI](https://travis-ci.com/lewandowskidawid/simpleWebServer)
 
 
 
@@ -42,12 +46,20 @@ The server runs on `65535` port and  resources from `/src/test/resources` direct
 
 ### Testing
  
- Tests could be executed from IDE level via running `*.feature` file. For testing purposes default server
+ Unit tests are run as part of build process. 
+ 
+ Integration tests might be called with `mvn test -Dtest=ServerTest` command. For testing purposes default server
  configuration exposes a demo page downloaded from: https://colorlib.com/preview/theme/atomic/
 
 
 ## Usage
-The server support only GET operations. All use cases are documented in `requests.feature` file.
+The server supports `GET` requests only. 
+* When existing resource is requested then the file is returned by the server with `200` status code
+* When existing directory is requested and the directory contains `index.html` file then the file is returned with `200` status code
+* When existing directory is requested but it doesn't contain `index.html` file then `403` status code is returned
+* When nonexisting resource is requested then `404` status code is returned
+
+In case of other requests `501 NOT IMPLEMENTED` response is returned.
 
 ### Run Parameters 
 * `-d <arg>` - allows to specify server root directory. Default value: `.`

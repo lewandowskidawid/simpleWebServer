@@ -11,6 +11,9 @@ import org.dlewandowski.webserver.request.RequestBuilder;
 import org.dlewandowski.webserver.response.Response;
 import org.dlewandowski.webserver.response.ResponseBuilder;
 
+/**
+ * Interpreters request and respond to it by finding proper {@link RequestProcessor}. When communication ends the {@link Socket} is being closed.
+ */
 class RequestHandler implements Runnable {
 
 	private static final Logger LOGGER = Logger.getLogger(RequestHandler.class);

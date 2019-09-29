@@ -11,6 +11,9 @@ import org.dlewandowski.webserver.processor.RequestProcessorProvider;
 import org.dlewandowski.webserver.request.RequestBuilder;
 import org.dlewandowski.webserver.response.ResponseBuilder;
 
+/**
+ * Listens for any requests. If a request it detected then it is served in a separate thread.
+ */
 public class Server {
 
 	private static final Logger LOGGER = Logger.getLogger(Server.class);
@@ -29,6 +32,11 @@ public class Server {
 		this.threadsNumber = threadsNumber;
 	}
 
+	/**
+	 * Starts the server and listens for requests.
+	 *
+	 * @throws IOException when server cannot be created
+	 */
 	public void start() throws IOException {
 		RequestBuilder requestBuilder = new RequestBuilder();
 		ResponseBuilder responseBuilder = new ResponseBuilder();
@@ -37,12 +45,8 @@ public class Server {
 			executorService = Executors.newFixedThreadPool(threadsNumber);
 			LOGGER.info("Server runs at: http://localhost:" + port);
 			while (true) {
-				try {
-					Socket socket = listener.accept();
-					executorService.execute(new RequestHandler(socket, directory, requestBuilder, responseBuilder, requestProcessorProvider));
-				} catch (RuntimeException e) {
-					LOGGER.error(e.getMessage(), e);
-				}
+				Socket socket = listener.accept();
+				executorService.execute(new RequestHandler(socket, directory, requestBuilder, responseBuilder, requestProcessorProvider));
 			}
 		} finally {
 			stop();

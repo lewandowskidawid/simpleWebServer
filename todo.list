@@ -1,0 +1,40 @@
+2. Test corner cases
+6. add java docs for classes e.g. message before headers, empty request, response committed twice
+12. do we need check if  response is committed in: org.dlewandowski.webserver.response.Response.commit CTRL+Shift+R
+13. Sonar review
+14. Socket timeout -> http://localhost:65535/huge.java NPE - connection is terminated
+	java.net.SocketException: Software caused connection abort: socket write error
+    	at java.net.SocketOutputStream.socketWrite0(Native Method)
+    	at java.net.SocketOutputStream.socketWrite(SocketOutputStream.java:111)
+    	at java.net.SocketOutputStream.write(SocketOutputStream.java:155)
+    	at java.nio.file.Files.copy(Files.java:2909)
+    	at java.nio.file.Files.copy(Files.java:3069)
+    	at org.dlewandowski.webserver.processor.GetRequestProcessor.sendRequestedFile(GetRequestProcessor.java:55)
+    	at org.dlewandowski.webserver.processor.GetRequestProcessor.processRequest(GetRequestProcessor.java:40)
+    	at org.dlewandowski.webserver.processor.RequestProcessor.processRequest(RequestProcessor.java:29)
+    	at org.dlewandowski.webserver.server.RequestHandler.run(RequestHandler.java:30)
+    	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+    	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+    	at java.lang.Thread.run(Thread.java:745)
+
+17. INternal server error support
+
+
+----17. Server try removal
+----1. Better names for tests
+----5. add unit tests
+----12. special characters support
+----12. How server should behave when root directory is requested - what response should be returned
+----15. Support for 404 - file not exist (/)
+----8. add better logs (/)
+----2. check how big files are processed (/)
+----1. integrate with SonarCloud 516daf01f2662cae8dd3b639032f3f85e95753b3 (/)
+----3. integrate with travis or something like that (/)
+----7. check multithreading - application teardown -is everything ok? (not sure if I can do it better)
+----9. run it on a single thread (/)
+----10. Simulate waits in the code and check how it behaves (/)
+
+
+16. Add support for HEAD requests and proper caching
+4. make application profiling
+11. Run tests parallel and add wait in the code

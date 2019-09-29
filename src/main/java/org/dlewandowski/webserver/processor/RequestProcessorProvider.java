@@ -4,8 +4,19 @@ import org.dlewandowski.webserver.request.Request;
 import org.dlewandowski.webserver.resources.ResourceProvider;
 import org.dlewandowski.webserver.response.Response;
 
+/**
+ * Provides proper {@link RequestProcessor} depends on request HTTP method
+ */
 public class RequestProcessorProvider {
 
+	/**
+	 * The method calculates proper {@link RequestProcessor}.
+	 *
+	 * @param request       the parameters is
+	 * @param response
+	 * @param directoryPath
+	 * @return
+	 */
 	public RequestProcessor get(Request request, Response response, String directoryPath) {
 		RequestProcessor result;
 		if (isGetRequest(request)) {

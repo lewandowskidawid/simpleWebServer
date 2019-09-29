@@ -8,33 +8,43 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 import org.dlewandowski.webserver.server.Server;
 
+/**
+ * Main class of the application. Parses parameters and runs the server.
+ */
 public class App {
 
-	public static final int DEFAULT_PORT = 65535;
+	private static final Logger LOGGER = Logger.getLogger(Server.class);
 
-	public static final String DEFAULT_SERVER_ROOT = ".";
+	private static final int DEFAULT_PORT = 65535;
 
-	public static final int DEFAULT_THREADS_NUMBER = 20;
+	private static final String DEFAULT_SERVER_ROOT = ".";
 
-	public static void main(String[] args) throws IOException, ParseException {
-		PropertyConfigurator.configure(App.class.getClassLoader().getResourceAsStream("logging.properties"));
-		Options options = getOptions();
-		CommandLine commandLine = new DefaultParser().parse(options, args);
+	private static final int DEFAULT_THREADS_NUMBER = 20;
 
-		if (commandLine.hasOption('h')) {
-			displayUsage(options);
-			return;
+	public static void main(String[] args) {
+		try {
+			PropertyConfigurator.configure(App.class.getClassLoader().getResourceAsStream("logging.properties"));
+			Options options = getOptions();
+			CommandLine commandLine = new DefaultParser().parse(options, args);
+
+			if (commandLine.hasOption('h')) {
+				displayUsage(options);
+				return;
+			}
+
+			int port = getOptionValue(commandLine, "p", DEFAULT_PORT);
+			int threadsPoolSize = getOptionValue(commandLine, "t", DEFAULT_THREADS_NUMBER);
+			String serverRoot = getOptionValue(commandLine, "d", DEFAULT_SERVER_ROOT);
+
+			Server server = new Server(serverRoot, port, threadsPoolSize);
+			server.start();
+		} catch (ParseException | IOException e) {
+			LOGGER.error("Cannot start the server", e);
 		}
-
-		int port = getOptionValue(commandLine, "p", DEFAULT_PORT);
-		int threadsPoolSize = getOptionValue(commandLine, "t", DEFAULT_THREADS_NUMBER);
-		String serverRoot = getOptionValue(commandLine, "d", DEFAULT_SERVER_ROOT);
-
-		Server server = new Server(serverRoot, port, threadsPoolSize);
-		server.start();
 	}
 
 	private static Options getOptions() {

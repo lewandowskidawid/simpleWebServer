@@ -17,7 +17,7 @@ import org.dlewandowski.webserver.server.Server;
  */
 public class App {
 
-	private static final Logger LOGGER = Logger.getLogger(Server.class);
+	private static final Logger LOGGER = Logger.getLogger(App.class);
 
 	private static final int DEFAULT_PORT = 65535;
 

@@ -66,7 +66,7 @@ public class App {
 		int result = defaultValue;
 		String optionValue = commandLine.getOptionValue(optionName);
 		if (StringUtils.isNotEmpty(optionValue)) {
-			result = Integer.parseInt(optionName);
+			result = Integer.parseInt(optionValue);
 		}
 		return result;
 	}
